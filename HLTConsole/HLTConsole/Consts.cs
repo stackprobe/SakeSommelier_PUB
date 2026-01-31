@@ -15,7 +15,7 @@ namespace HLTStudio
 		{
 			get
 			{
-				string dir = @".\res";
+				string dir = Path.Combine(ProcMain.SelfDir, "res");
 
 				if (!Directory.Exists(dir))
 				{
