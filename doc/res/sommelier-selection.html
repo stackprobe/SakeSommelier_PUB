@@ -1,0 +1,570 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>酒ソムリエ：おすすめ結果</title>
+  <style>
+    :root{
+      --bg:#0b1220;
+      --panel:#0f172a;
+      --panel2:#111c33;
+      --text:#e5e7eb;
+      --muted:#9ca3af;
+      --border:#23314d;
+      --accent:#60a5fa;
+      --good:#22c55e;
+      --warn:#f59e0b;
+      --bad:#ef4444;
+      --chip:#1f2a44;
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --radius: 14px;
+      --radius2: 18px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+    }
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      background: radial-gradient(1200px 800px at 20% 10%, rgba(96,165,250,.15), transparent 55%),
+                  radial-gradient(1000px 600px at 85% 20%, rgba(34,197,94,.10), transparent 55%),
+                  var(--bg);
+      color:var(--text);
+      font-family:var(--sans);
+      line-height:1.5;
+    }
+    header{
+      padding: 22px 18px 10px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    h1{
+      margin: 0 0 8px;
+      font-size: 20px;
+      letter-spacing:.02em;
+    }
+    .subtitle{
+      color:var(--muted);
+      font-size: 13px;
+      margin-bottom: 10px;
+    }
+    .container{
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 18px 30px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.03), transparent 22%), var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius2);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .card .hd{
+      padding: 14px 16px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 12px;
+      background: rgba(255,255,255,.02);
+      border-bottom: 1px solid rgba(255,255,255,.04);
+    }
+    .card .bd{ padding: 14px 16px 16px; }
+
+    .row{
+      display:flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items:center;
+    }
+
+    .chip{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(96,165,250,.10);
+      border: 1px solid rgba(96,165,250,.25);
+      color: #cfe6ff;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+    .chip.muted{
+      background: rgba(255,255,255,.04);
+      border-color: rgba(255,255,255,.08);
+      color: var(--muted);
+    }
+
+    .badge{
+      display:inline-flex;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.04);
+      color: var(--text);
+      white-space: nowrap;
+    }
+    .badge.high{ border-color: rgba(34,197,94,.35); background: rgba(34,197,94,.12); color:#c9f7d6; }
+    .badge.medium{ border-color: rgba(245,158,11,.35); background: rgba(245,158,11,.12); color:#ffe6b5; }
+    .badge.low{ border-color: rgba(239,68,68,.35); background: rgba(239,68,68,.12); color:#ffd0d0; }
+
+    .grid2{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+    @media (min-width: 980px){
+      .grid2{ grid-template-columns: 1.05fr .95fr; }
+    }
+
+    .kvs{
+      display:grid;
+      grid-template-columns: 140px 1fr;
+      gap: 8px 10px;
+      padding: 12px;
+      background: rgba(255,255,255,.02);
+      border: 1px solid rgba(255,255,255,.06);
+      border-radius: var(--radius);
+    }
+    .kvs .k{ color: var(--muted); font-size: 12px; }
+    .kvs .v{ font-size: 13px; }
+
+    .section-title{
+      font-size: 13px;
+      color: #dbeafe;
+      margin: 0 0 8px;
+      display:flex;
+      align-items:center;
+      gap: 8px;
+    }
+    .section-title::before{
+      content:"";
+      width: 10px;
+      height: 10px;
+      border-radius: 3px;
+      background: rgba(96,165,250,.7);
+      box-shadow: 0 0 0 3px rgba(96,165,250,.15);
+    }
+
+    details{
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: var(--radius);
+      background: rgba(255,255,255,.02);
+      overflow:hidden;
+    }
+    summary{
+      cursor: pointer;
+      padding: 10px 12px;
+      color: #cfe6ff;
+      font-size: 13px;
+      list-style: none;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 10px;
+    }
+    summary::-webkit-details-marker{ display:none; }
+    summary .hint{ color: var(--muted); font-size: 12px; }
+    details[open] summary{
+      border-bottom: 1px solid rgba(255,255,255,.06);
+      background: rgba(96,165,250,.06);
+    }
+    .list{
+      margin: 0;
+      padding: 10px 18px 12px;
+      color: var(--text);
+      font-size: 13px;
+    }
+    .list li{ margin: 6px 0; color: #e5e7eb; }
+    .muted{ color: var(--muted); }
+
+    .result-title{
+      font-size: 16px;
+      margin:0;
+      display:flex;
+      align-items:baseline;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .rank{
+      font-size: 12px;
+      color: #dbeafe;
+      background: rgba(96,165,250,.12);
+      border: 1px solid rgba(96,165,250,.25);
+      padding: 3px 8px;
+      border-radius: 999px;
+    }
+    .producer{
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 4px;
+    }
+    .overview{
+      margin: 10px 0 0;
+      font-size: 13px;
+      color: #e5e7eb;
+    }
+
+    .toolbar{
+      display:flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items:center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      border-top: 1px solid rgba(255,255,255,.06);
+      background: rgba(255,255,255,.02);
+    }
+    .btn{
+      appearance:none;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      padding: 9px 12px;
+      border-radius: 12px;
+      cursor:pointer;
+      font-size: 13px;
+      display:inline-flex;
+      align-items:center;
+      gap: 8px;
+    }
+    .btn.primary{
+      border-color: rgba(96,165,250,.35);
+      background: rgba(96,165,250,.16);
+      color: #e8f2ff;
+    }
+    .btn:active{ transform: translateY(1px); }
+    .btn small{ color: var(--muted); font-size: 11px; }
+
+    textarea{
+      width: 100%;
+      min-height: 220px;
+      resize: vertical;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: #e5e7eb;
+      background: rgba(0,0,0,.25);
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: var(--radius);
+      padding: 12px;
+      outline: none;
+    }
+    .error{
+      padding: 10px 12px;
+      margin-top: 10px;
+      border-radius: var(--radius);
+      border: 1px solid rgba(239,68,68,.35);
+      background: rgba(239,68,68,.12);
+      color: #ffd0d0;
+      font-size: 13px;
+      display:none;
+      white-space: pre-wrap;
+    }
+    footer{
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 18px 22px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    code.inline{
+      font-family: var(--mono);
+      font-size: 12px;
+      color: #cfe6ff;
+      background: rgba(96,165,250,.08);
+      border: 1px solid rgba(96,165,250,.16);
+      padding: 2px 6px;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>酒ソムリエ：おすすめ結果</h1>
+    <div class="subtitle">
+      入力条件（解釈）と、ランキング形式のおすすめ銘柄を表示します。
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- 上段：入力条件 -->
+    <section class="card" id="query-card">
+      <div class="hd">
+        <div>
+          <div class="section-title" style="margin:0;">入力条件</div>
+          <div class="muted" style="font-size:12px;margin-top:4px;">
+            ユーザー入力・選択カテゴリ・推定プリファレンスをまとめて表示
+          </div>
+        </div>
+        <div class="row" id="query-chips"></div>
+      </div>
+      <div class="bd">
+        <div class="grid2">
+          <div>
+            <div class="section-title">要約</div>
+            <div class="kvs" id="query-summary"></div>
+          </div>
+          <div>
+            <div class="section-title">推定プリファレンス</div>
+            <div class="kvs" id="prefs-kvs"></div>
+          </div>
+        </div>
+
+        <div style="margin-top:12px;">
+          <details id="notes-details">
+            <summary>
+              <span>補足（notes）</span>
+              <span class="hint">クリックで開閉</span>
+            </summary>
+            <ul class="list" id="notes-list"></ul>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- 中段：結果 -->
+    <section class="card" id="results-card">
+      <div class="hd">
+        <div>
+          <div class="section-title" style="margin:0;">おすすめランキング</div>
+          <div class="muted" style="font-size:12px;margin-top:4px;">
+            銘柄ごとに概要・一致理由を表示
+          </div>
+        </div>
+        <div class="row">
+          <span class="chip muted">表示件数: <span id="result-count">0</span></span>
+        </div>
+      </div>
+      <div class="bd" id="results-list"></div>
+    </section>
+
+    <!-- 下段：JSONビューワ/編集 -->
+    <section class="card">
+      <div class="hd">
+        <div>
+          <div class="section-title" style="margin:0;">データ（JSON）</div>
+          <div class="muted" style="font-size:12px;margin-top:4px;">
+            <code class="inline">貼り付け → 再描画</code> でUI確認できます
+          </div>
+        </div>
+      </div>
+      <div class="bd">
+        <textarea id="json-input" spellcheck="false"></textarea>
+        <div class="error" id="error-box"></div>
+      </div>
+      <div class="toolbar">
+        <div class="row">
+          <button class="btn primary" id="render-btn">再描画</button>
+          <button class="btn" id="copy-btn">JSONをコピー</button>
+        </div>
+        <div class="muted">
+          ※ このHTMLは外部ライブラリなしで動作します
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    tips: データ構造が変わっても、存在チェック（null安全）でなるべく崩れないようにしてあります。
+  </footer>
+
+  <script>
+    // ===== 初期データ（ユーザー貼り付けJSON） =====
+    INITIAL_JSON = { "query": { "user_inputs": [ "日本酒" ], "selected_categories": [ "さわやかで甘味のある", "辛口", "すっきり透明感" ], "interpreted_preferences": { "sweet_dry": "dry", "body": "light", "aroma": "fruity", "clarity": "crisp", "acidity": "medium", "finish": "medium" }, "keywords": [ "日本酒", "さわやか", "甘味", "辛口", "すっきり", "透明感" ], "constraints": { "region_preference": null, "price_range_jpy": { "min": null, "max": null } } }, "results": [ { "rank": 1, "category": "日本酒", "brand": "久保田 千寿 吟醸", "producer": "朝日酒造株式会社", "producer_location": { "prefecture": "新潟県", "city": "長岡市" }, "overview": "新潟県を代表する淡麗辛口の吟醸酒。上品な香りとすっきりとした飲み口、キレのある後味が特徴で、冷やして飲むのがおすすめ。和食全般と相性が良い。", "match_reason": [ "「辛口」の要望に合致", "「すっきり透明感」の要望に合致", "「さわやか」な印象", "吟醸香が控えめで、透明感のある味わい" ], "confidence": "high" }, { "rank": 2, "category": "日本酒", "brand": "写楽 純米吟醸", "producer": "宮泉銘醸株式会社", "producer_location": { "prefecture": "福島県", "city": "会津若松市" }, "overview": "福島県で醸される、フレッシュでフルーティーな吟醸香と、軽快でクリアな旨味が特徴の日本酒。キレが良く、温度帯を選ばず楽しめる。魚介類とのペアリングに最適。", "match_reason": [ "「さわやかで甘味のある」のニュアンス（フルーティーさ）", "「すっきり透明感」の要望に合致", "軽快な味わいが「辛口」の印象を補強" ], "confidence": "medium" }, { "rank": 3, "category": "日本酒", "brand": "田酒 特別純米", "producer": "西田酒造店", "producer_location": { "prefecture": "青森県", "city": "青森市" }, "overview": "青森県産米を100%使用し、米の旨味を最大限に引き出した純米酒。芳醇でありながらも、後味はすっきりとキレが良い。冷やしても燗でも美味しく、様々な料理に合う。", "match_reason": [ "米の旨味と、後味の「すっきり」が両立", "「透明感」のある味わい", "「辛口」の要素も持ち合わせる" ], "confidence": "medium" }, { "rank": 4, "category": "日本酒", "brand": "十四代 本丸 秘伝玉返し", "producer": "高木酒造株式会社", "producer_location": { "prefecture": "山形県", "city": "村山市" }, "overview": "山形県を代表する銘柄の一つ。芳醇な旨味と、ふくらみのある甘み、そしてキレのある後味が絶妙なバランス。冷やして飲むことで、その瑞々しさが際立つ。脂の乗った魚料理に合う。", "match_reason": [ "「さわやかで甘味のある」の要素が強い", "「すっきり」とした後味", "「透明感」を意識した造り" ], "confidence": "medium" }, { "rank": 5, "category": "日本酒", "brand": "醸し人九平次 純米大吟醸 山田錦", "producer": "株式会社 萬乗醸造", "producer_location": { "prefecture": "愛知県", "city": "名古屋市" }, "overview": "山田錦を精米歩合50%まで磨き上げた純米大吟醸。華やかな香りと、透明感のある米の旨味、そしてエレガントな余韻が特徴。温度変化による味わいの変化も楽しめる。繊細な料理と合わせたい。", "match_reason": [ "「透明感」と「すっきり」した味わいが核", "「さわやか」さを感じるフルーティーな香り", "「辛口」とも解釈できるクリアな後味" ], "confidence": "low" } ], "notes": [ "「さわやかで甘味のある」「辛口」「すっきり透明感」という指定は、日本酒においてはやや矛盾する要素を含みます。一般的に「甘味」と「辛口」は対義語とされますが、ここでは「フルーティーな香りがさわやかで、後味に甘みを感じさせつつもキレがあり、全体として透明感のあるクリアな味わい」と解釈しました。そのため、候補は吟醸香やフルーティーさを持ちながらも、後味のキレやスッキリ感を重視して選定しています。", "「さわやかで甘味のある」という表現は、日本酒の「甘口」とは異なり、フルーティーな香りの華やかさや、軽快な口当たりを指すものと推測しました。そのため、「甘辛」の軸では「medium」または「dry」寄りの解釈で選定しています。", "「醸し人九平次 純米大吟醸 山田錦」は、純米大吟醸としてはやや高級な部類に入りますが、上記解釈に基づき含めました。価格帯の指定がないため、参考としています。" ] };
+
+<!-- SET-INITIAL-JSON -->
+
+    const $ = (sel) => document.querySelector(sel);
+    const el = (tag, attrs = {}, ...children) => {
+      const n = document.createElement(tag);
+      for (const [k,v] of Object.entries(attrs || {})){
+        if (k === "class") n.className = v;
+        else if (k === "text") n.textContent = v;
+        else if (k.startsWith("on") && typeof v === "function") n.addEventListener(k.slice(2), v);
+        else n.setAttribute(k, v);
+      }
+      for (const c of children){
+        if (c == null) continue;
+        if (typeof c === "string") n.appendChild(document.createTextNode(c));
+        else n.appendChild(c);
+      }
+      return n;
+    };
+
+    function safeJoin(arr, sep=" / "){
+      if (!Array.isArray(arr) || arr.length === 0) return "—";
+      return arr.filter(x => x != null && String(x).trim() !== "").join(sep) || "—";
+    }
+    function safeText(v){
+      if (v == null || String(v).trim() === "") return "—";
+      return String(v);
+    }
+    function confClass(conf){
+      const c = (conf || "").toLowerCase();
+      if (c === "high") return "high";
+      if (c === "medium") return "medium";
+      if (c === "low") return "low";
+      return "";
+    }
+    function confLabel(conf){
+      const c = (conf || "").toLowerCase();
+      if (!c) return "—";
+      return c;
+    }
+
+    function render(data){
+      // reset
+      $("#query-chips").innerHTML = "";
+      $("#query-summary").innerHTML = "";
+      $("#prefs-kvs").innerHTML = "";
+      $("#notes-list").innerHTML = "";
+      $("#results-list").innerHTML = "";
+      $("#result-count").textContent = "0";
+
+      const q = data?.query || {};
+      const prefs = q?.interpreted_preferences || {};
+      const constraints = q?.constraints || {};
+      const price = constraints?.price_range_jpy || {};
+
+      // chips (user_inputs / selected_categories)
+      const chips = [];
+      (q?.user_inputs || []).forEach(v => chips.push(el("span",{class:"chip",text:v})));
+      (q?.selected_categories || []).forEach(v => chips.push(el("span",{class:"chip muted",text:v})));
+      if (chips.length === 0) chips.push(el("span",{class:"chip muted",text:"入力なし"}));
+      chips.forEach(c => $("#query-chips").appendChild(c));
+
+      // summary kvs
+      const addKV = (root, key, val) => {
+        root.appendChild(el("div",{class:"k",text:key}));
+        root.appendChild(el("div",{class:"v",text: safeText(val)}));
+      };
+      addKV($("#query-summary"), "ユーザー入力", safeJoin(q?.user_inputs, ", "));
+      addKV($("#query-summary"), "選択カテゴリ", safeJoin(q?.selected_categories, ", "));
+      addKV($("#query-summary"), "キーワード", safeJoin(q?.keywords, ", "));
+      addKV($("#query-summary"), "地域希望", safeText(constraints?.region_preference));
+      const priceTxt = (price?.min || price?.max)
+        ? `${price?.min ?? "—"} ～ ${price?.max ?? "—"} 円`
+        : "指定なし";
+      addKV($("#query-summary"), "価格帯", priceTxt);
+
+      // prefs kvs
+      const prefEntries = Object.entries(prefs || {});
+      if (prefEntries.length === 0){
+        addKV($("#prefs-kvs"), "推定", "—");
+      }else{
+        for (const [k,v] of prefEntries){
+          addKV($("#prefs-kvs"), k, v);
+        }
+      }
+
+      // notes
+      const notes = Array.isArray(data?.notes) ? data.notes : [];
+      if (notes.length === 0){
+        $("#notes-list").appendChild(el("li",{text:"—"}));
+      } else {
+        notes.forEach(n => $("#notes-list").appendChild(el("li",{text:n})));
+      }
+
+      // results
+      const results = Array.isArray(data?.results) ? data.results : [];
+      $("#result-count").textContent = String(results.length);
+
+      if (results.length === 0){
+        $("#results-list").appendChild(el("div",{class:"muted",text:"結果がありません。"}));
+        return;
+      }
+
+      // sort by rank if exists
+      const sorted = [...results].sort((a,b) => (a?.rank ?? 9999) - (b?.rank ?? 9999));
+
+      sorted.forEach(r => {
+        const rank = r?.rank ?? "—";
+        const brand = safeText(r?.brand);
+        const category = safeText(r?.category);
+        const producer = safeText(r?.producer);
+        const pref = r?.producer_location?.prefecture;
+        const city = r?.producer_location?.city;
+        const place = [pref, city].filter(Boolean).join(" / ") || "—";
+        const overview = safeText(r?.overview);
+        const confidence = confLabel(r?.confidence);
+
+        const headLeft = el("div",{},
+          el("h3",{class:"result-title"},
+            el("span",{class:"rank",text:`#${rank}`}),
+            el("span",{text: brand})
+          ),
+          el("div",{class:"producer",text:`${category} / ${producer}（${place}）`})
+        );
+
+        const headRight = el("div",{class:"row"},
+          el("span",{class:`badge ${confClass(r?.confidence)}`,text:`confidence: ${confidence}`})
+        );
+
+        const match = Array.isArray(r?.match_reason) ? r.match_reason : [];
+
+        const card = el("div",{class:"card", style:"margin-bottom:12px;"},
+          el("div",{class:"hd"},
+            headLeft,
+            headRight
+          ),
+          el("div",{class:"bd"},
+            el("p",{class:"overview",text: overview}),
+            el("div",{style:"margin-top:12px;"},
+              el("details",{},
+                el("summary",{},
+                  el("span",{text:"一致理由（match_reason）"}),
+                  el("span",{class:"hint",text: match.length ? `${match.length}件` : "—"})
+                ),
+                el("ul",{class:"list"},
+                  ...(match.length ? match.map(x => el("li",{text:x})) : [el("li",{text:"—"})])
+                )
+              )
+            )
+          )
+        );
+
+        $("#results-list").appendChild(card);
+      });
+    }
+
+    function showError(msg){
+      const box = $("#error-box");
+      box.style.display = msg ? "block" : "none";
+      box.textContent = msg || "";
+    }
+
+    // init
+    const jsonArea = $("#json-input");
+    jsonArea.value = JSON.stringify(INITIAL_JSON, null, 2);
+    render(INITIAL_JSON);
+
+    // actions
+    $("#render-btn").addEventListener("click", () => {
+      showError("");
+      try{
+        const obj = JSON.parse(jsonArea.value);
+        render(obj);
+      }catch(e){
+        showError("JSONの解析に失敗しました:\n" + (e?.message || e));
+      }
+    });
+
+    $("#copy-btn").addEventListener("click", async () => {
+      showError("");
+      try{
+        await navigator.clipboard.writeText(jsonArea.value);
+      }catch(e){
+        // fallback
+        jsonArea.select();
+        document.execCommand("copy");
+      }
+    });
+  </script>
+</body>
+</html>

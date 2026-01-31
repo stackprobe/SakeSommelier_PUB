@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<title>Sake Sommelier</title>
+<style>
+    :root{
+      --bg: #111C2F;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --pill-bg: #f3f4f6;
+      --pill-border: #d1d5db;
+      --pill-text: #111827;
+    }
+
+    *{ box-sizing: border-box; }
+    body{
+      margin:0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+    }
+    .wrap{
+      max-width: 920px;
+      margin: 22px auto;
+      padding: 0 14px 30px;
+    }
+
+    .card{
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(17,24,39,0.06);
+      padding: 18px;
+    }
+
+    h1{
+      margin:0 0 10px;
+      font-size: 20px;
+      letter-spacing: .02em;
+    }
+
+    .row{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+
+    .row.nowrap{
+      flex-wrap: nowrap;
+    }
+    .row.nowrap input[type="text"]{
+      flex: 1 1 auto;
+      width: auto;
+      min-width: 0;
+    }
+    .row.nowrap button{
+      flex: 0 0 auto;
+      white-space: nowrap;
+    }
+
+    label{
+      font-size: 12px;
+      color: var(--muted);
+      display:block;
+      margin: 14px 0 8px;
+    }
+
+    input[type="text"]{
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 14px;
+      outline: none;
+      background: #fff;
+      color: var(--text);
+    }
+
+    .pill-group{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+    }
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      padding: 7px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--pill-border);
+      background: var(--pill-bg);
+      color: var(--pill-text);
+      font-size: 12px;
+      line-height: 1;
+      cursor: pointer;
+      user-select: none;
+      transition: transform .03s ease-in-out;
+    }
+    .pill:active{
+      transform: scale(0.98);
+    }
+
+    .pill.primary{
+      border-color: #93c5fd;
+      background: #dbeafe;
+      color: #1e3a8a;
+      cursor: pointer;
+    }
+    .pill.primary2{
+      border-color: #f9a8d4;
+      background: #fce7f3;
+      color: #9d174d;
+      cursor: pointer;
+    }
+
+    .ghost-btn{
+      border: 1px solid var(--border);
+      background: #fff;
+      color: var(--text);
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 14px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .ghost-btn:hover{
+      background: #f9fafb;
+    }
+
+    hr{
+      border: 0;
+      height: 1px;
+      background: var(--border);
+      margin: 12px 0;
+    }
+
+    .note{
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 14px;
+      flex-wrap:wrap;
+    }
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="card">
+<h1>Sake Sommelier</h1>
+<hr/>
+<br/>
+
+      <!-- 種類（ビール/日本酒/ワイン） -->
+      <label>選択された種類</label>
+<div aria-label="種類" class="pill-group" id="selected-types">
+<!-- SELECTED-TYPES-BEGIN -->
+<span class="pill primary">日本酒</span>
+<!-- SELECTED-TYPES-END -->
+<!--
+<span class="pill primary">ビール</span>
+<span class="pill primary">ワイン</span>
+-->
+</div>
+<br/>
+<!-- 種類（ビール/日本酒/ワイン） -->
+<label>種類の候補</label>
+<div aria-label="種類" class="pill-group" id="candidate-types">
+	<span class="pill">日本酒</span>
+	<span class="pill">ビール</span>
+	<span class="pill">ワイン</span>
+	<span class="pill">シードル（りんご酒）</span>
+	<span class="pill">ミード（はちみつ酒）</span>
+	<span class="pill">マッコリ</span>
+	<span class="pill">紹興酒</span>
+	<span class="pill">焼酎</span>
+	<span class="pill">ウイスキー</span>
+	<span class="pill">ブランデー</span>
+	<span class="pill">ウォッカ</span>
+	<span class="pill">ジン</span>
+	<span class="pill">ラム</span>
+	<span class="pill">テキーラ</span>
+	<span class="pill">リキュール</span>
+	<span class="pill">梅酒</span>
+	<span class="pill">果実酒</span>
+	<span class="pill">薬草酒</span>
+	<span class="pill">カクテル</span>
+	<span class="pill">発泡酒</span>
+</div>
+<div class="row" style="margin-top:10px;">
+<button class="ghost-btn" id="select-all-types" type="button">全部選択</button>
+<button class="ghost-btn" id="select-sake-only" type="button">日本酒のみ</button>
+</div>
+<br/>
+<hr/>
+<br/>
+<label>選択された特徴</label>
+<div aria-label="種類" class="pill-group" id="selected-tokuchou">
+<!-- SELECTED-TOKUCHOU-BEGIN -->
+<span class="pill primary2">さわやかで甘味のある</span>
+<span class="pill primary2">辛口</span>
+<span class="pill primary2">すっきり透明感</span>
+<!-- SELECTED-TOKUCHOU-END -->
+</div>
+<br/>
+<label>入力された特徴</label>
+<div class="row nowrap">
+<input placeholder="例：すっきりして透明感 / 甘口だけどあっさり / フルーティ" type="text" id="tokuchou-input"/>
+<button class="ghost-btn" type="button" id="tokuchou-confirm">確　定</button>
+</div>
+<br/>
+<!-- 特徴タグ（50個くらい） -->
+<label>特徴の候補</label>
+<div aria-label="特徴タグ" class="pill-group" id="candidate-tokuchou">
+<!-- CANDIDATE-TOKUCHOU-BEGIN -->
+        <span class="pill">さわやかで甘味のある</span>
+        <span class="pill">辛口</span>
+        <span class="pill">すっきり透明感</span>
+        <span class="pill">フルーティ</span>
+        <span class="pill">柑橘系</span>
+        <span class="pill">青りんご</span>
+        <span class="pill">白ぶどう</span>
+        <span class="pill">洋梨</span>
+        <span class="pill">ベリー</span>
+        <span class="pill">花の香り</span>
+        <span class="pill">華やか</span>
+        <span class="pill">控えめな香り</span>
+        <span class="pill">米の旨み</span>
+        <span class="pill">酸味あり</span>
+        <span class="pill">酸味ひかえめ</span>
+        <span class="pill">甘口</span>
+        <span class="pill">中口</span>
+        <span class="pill">濃醇</span>
+        <span class="pill">淡麗</span>
+        <span class="pill">キレがある</span>
+        <span class="pill">まろやか</span>
+        <span class="pill">コク深い</span>
+        <span class="pill">軽やか</span>
+        <span class="pill">スパイシー</span>
+        <span class="pill">渋み</span>
+        <span class="pill">タンニン強め</span>
+        <span class="pill">タンニン弱め</span>
+        <span class="pill">樽香</span>
+        <span class="pill">バニラ香</span>
+        <span class="pill">ハーブ感</span>
+        <span class="pill">苦味しっかり</span>
+        <span class="pill">苦味ひかえめ</span>
+        <span class="pill">香ばしい</span>
+        <span class="pill">麦の香り</span>
+        <span class="pill">ロースト</span>
+        <span class="pill">チョコ感</span>
+        <span class="pill">カラメル</span>
+        <span class="pill">クリーミー</span>
+        <span class="pill">ドライ</span>
+        <span class="pill">微発泡</span>
+        <span class="pill">発泡感強め</span>
+        <span class="pill">冷やして美味しい</span>
+        <span class="pill">常温向き</span>
+        <span class="pill">燗向き</span>
+        <span class="pill">食中酒</span>
+        <span class="pill">デザート向き</span>
+        <span class="pill">和食に合う</span>
+        <span class="pill">肉に合う</span>
+        <span class="pill">チーズに合う</span>
+        <span class="pill">魚介に合う</span>
+        <span class="pill">軽い余韻</span>
+        <span class="pill">長い余韻</span>
+        <span class="pill">スッと消える</span>
+        <span class="pill">甘い余韻</span>
+<!-- CANDIDATE-TOKUCHOU-END -->
+</div>
+
+<br/>
+<hr/>
+<br/>
+
+<div class="row">
+<button class="ghost-btn" type="button" id="execute-btn">実　行</button>
+</div>
+
+<br/>
+<br/>
+<br/>
+
+</div>
+</div>
+
+<script>
+  const selected = document.getElementById("selected-types");
+  const candidates = document.getElementById("candidate-types");
+
+  const selectAllTypesBtn = document.getElementById("select-all-types");
+  selectAllTypesBtn.addEventListener("click", () => {
+    [...candidates.querySelectorAll(".pill")].forEach((pill) => {
+      const text = pill.textContent;
+      if ([...selected.children].some(p => p.textContent === text)) return;
+      const newPill = document.createElement("span");
+      newPill.className = "pill primary";
+      newPill.textContent = text;
+      selected.appendChild(newPill);
+    });
+  });
+
+  const selectSakeOnlyBtn = document.getElementById("select-sake-only");
+  selectSakeOnlyBtn.addEventListener("click", () => {
+    // いったん全削除して「日本酒」のみ選択状態にする
+    selected.innerHTML = "";
+    const newPill = document.createElement("span");
+    newPill.className = "pill primary";
+    newPill.textContent = "日本酒";
+    selected.appendChild(newPill);
+  });
+
+  // 候補をクリック → 上に追加
+  candidates.addEventListener("click", (e) => {
+    const pill = e.target.closest(".pill");
+    if (!pill) return;
+
+    const text = pill.textContent;
+
+    // すでに選択されていたら何もしない
+    if ([...selected.children].some(p => p.textContent === text)) return;
+
+    const newPill = document.createElement("span");
+    newPill.className = "pill primary";
+    newPill.textContent = text;
+
+    selected.appendChild(newPill);
+  });
+
+  // 選択済みをクリック → 削除
+  selected.addEventListener("click", (e) => {
+    const pill = e.target.closest(".pill");
+    if (!pill) return;
+
+    pill.remove();
+  });
+
+  // ----
+
+  const selected2 = document.getElementById("selected-tokuchou");
+  const candidates2 = document.getElementById("candidate-tokuchou");
+
+  // 候補をクリック → 上に追加
+  candidates2.addEventListener("click", (e) => {
+    const pill = e.target.closest(".pill");
+    if (!pill) return;
+
+    const text = pill.textContent;
+
+    // すでに選択されていたら何もしない
+    if ([...selected2.children].some(p => p.textContent === text)) return;
+
+    const newPill = document.createElement("span");
+    newPill.className = "pill primary2";
+    newPill.textContent = text;
+
+    selected2.appendChild(newPill);
+  });
+
+  // 選択済みをクリック → 削除
+  selected2.addEventListener("click", (e) => {
+    const pill = e.target.closest(".pill");
+    if (!pill) return;
+
+    pill.remove();
+  });
+
+  // ----
+
+const selectedTokuchou = document.getElementById("selected-tokuchou");
+const candidateTokuchou = document.getElementById("candidate-tokuchou");
+const tokuchouButton = document.getElementById("tokuchou-confirm");
+const tokuchouInput = document.getElementById("tokuchou-input");
+
+tokuchouButton.addEventListener("click", () => {
+  const text = tokuchouInput.value.trim();
+  if (!text) return;
+
+  const exists = (container) =>
+    [...container.children].some(p => p.textContent === text);
+
+  // 選択された特徴の最後に追加
+  if (!exists(selectedTokuchou)) {
+    const pill = document.createElement("span");
+    pill.className = "pill primary2";
+    pill.textContent = text;
+    selectedTokuchou.appendChild(pill);
+  }
+
+  // 特徴の候補の先頭に追加
+  if (!exists(candidateTokuchou)) {
+    const pill = document.createElement("span");
+    pill.className = "pill";
+    pill.textContent = text;
+    candidateTokuchou.prepend(pill);
+  }
+
+  tokuchouInput.value = "";
+});
+
+// ---- 実行ボタン：必須チェック付き POST 遷移（JS完結） ----
+const executeBtn = document.getElementById("execute-btn");
+
+function getPillTexts(containerId) {
+  const el = document.getElementById(containerId);
+  if (!el) return [];
+  return [...el.querySelectorAll(".pill")]
+    .map(p => (p.textContent || "").trim())
+    .filter(Boolean);
+}
+
+executeBtn.addEventListener("click", (e) => {
+  e.preventDefault();
+
+  const selectedTypes = getPillTexts("selected-types");
+  const selectedTokuchou = getPillTexts("selected-tokuchou");
+  const candidateTokuchou = getPillTexts("candidate-tokuchou");
+
+  // 必須チェック
+  if (selectedTypes.length === 0) {
+    alert("種類を1つ以上選択してください。");
+    return;
+  }
+  if (selectedTokuchou.length === 0) {
+    alert("特徴を1つ以上選択してください。");
+    return;
+  }
+
+  const payload = {
+    selected_types: selectedTypes,
+    selected_tokuchou: selectedTokuchou,
+    candidate_tokuchou: candidateTokuchou,
+  };
+
+  // JSでformを生成してPOST送信 → ページ遷移
+  const form = document.createElement("form");
+  form.method = "POST";
+  //form.action = window.location.href;
+  form.action = "sommelier-selection.html";
+
+  const input = document.createElement("input");
+  input.type = "hidden";
+  input.name = "payload";
+  input.value = JSON.stringify(payload);
+
+  form.appendChild(input);
+  document.body.appendChild(form);
+  form.submit();
+});
+
+</script>
+</body>
+</html>
