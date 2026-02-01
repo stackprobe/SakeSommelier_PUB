@@ -130,14 +130,19 @@ namespace HLTStudio.Modules
 
 #endif
 
-				HTTPClient hc = new HTTPClient(
-					//"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent" // 250回/day
-					"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent" // 1000回/day
-					)
+				string[] URLS_BY_MODEL = new string[]
+				{
+					"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent", // 標準？
+					"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent", // 軽量版？
+				};
+
+				string url = SCommon.CRandom.ChooseOne(URLS_BY_MODEL); // zantei
+
+				HTTPClient hc = new HTTPClient(url)
 				{
 					ConnectTimeoutMillis = 30_000, // 30 sec
-					TimeoutMillis = 360_000, // 6 min
-					IdleTimeoutMillis = 180_000, // 3 min
+					TimeoutMillis = 1200_000, // 20 min
+					IdleTimeoutMillis = 900_000, // 15 min
 					ResBodySizeMax = 50_000_000, // 50 MB
 					ResFile = recvFile,
 				};
